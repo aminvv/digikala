@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, OneToMany } from "typeorm";
 import { ProductDetailEntity } from "./product-detail.entity";
 import { ProductColorEntity } from "./product-color.entity";
 import { ProductSizeEntity } from "./product-size.entity";
+import { ProductType } from "../enum/type.enum";
 
 @Entity()
 export class ProductEntity extends BaseEntityCustom {
@@ -14,6 +15,8 @@ export class ProductEntity extends BaseEntityCustom {
     slug: string
     @Column()
     code: string
+    @Column({enum:ProductType})
+    type: string
     @Column({default:0})
     count: number
     @Column({type:"decimal" ,nullable:true})
