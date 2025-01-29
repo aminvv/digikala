@@ -15,7 +15,7 @@ export class ProductEntity extends BaseEntityCustom {
     slug: string
     @Column()
     code: string
-    @Column({enum:ProductType})
+    @Column({type:"enum",enum:ProductType})
     type: string
     @Column({default:0})
     count: number

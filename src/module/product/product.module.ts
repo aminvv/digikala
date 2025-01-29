@@ -6,10 +6,13 @@ import { ProductEntity } from './entities/product.entity';
 import { ProductDetailEntity } from './entities/product-detail.entity';
 import { ProductSizeEntity } from './entities/product-size.entity';
 import { ProductColorEntity } from './entities/product-color.entity';
+import { ProductColorController } from './controller/product-color.controller';
+import { ProductDetailController } from './controller/product-detail.controller';
+import { ProductSizeController } from './controller/product-size.controller';
 
 @Module({
   imports:[TypeOrmModule.forFeature([ProductEntity,ProductDetailEntity,ProductSizeEntity,ProductColorEntity])],
-  controllers: [ProductController],
+  controllers: [ProductController,ProductColorController,ProductDetailController,ProductSizeController],
   providers: [ProductService],
 })
 export class ProductModule {}

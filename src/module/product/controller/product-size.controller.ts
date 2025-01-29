@@ -3,6 +3,7 @@ import { ProductService } from '../product.service';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { swaggerConsumes } from 'src/common/enum/swaggerConsumes.enum';
 import { CreateProductDto, UpdateProductDto } from '../dto/product.dto';
+import { AddSizeDto, UpdateAddSizeDtoDto } from '../dto/size.dto';
 
 
 @Controller('product-size')
@@ -11,7 +12,7 @@ export class ProductSizeController {
   constructor(private readonly productService: ProductService) {}
 @Post("/create-product")
 @ApiConsumes(swaggerConsumes.UrlEncoded)
-create(@Body()createProductDto:CreateProductDto){}
+create(@Body()SizeDto:AddSizeDto){}
 
 
 @Get("/find-product")
@@ -21,7 +22,7 @@ find(){}
 
 @Put("/update-product/:id")
 @ApiConsumes(swaggerConsumes.UrlEncoded)
-update(@Param()id:number,@Body("id" ,ParseIntPipe)updateProductDto:UpdateProductDto){}
+update(@Param()id:number,@Body("id" ,ParseIntPipe)updateSizeDto:UpdateAddSizeDtoDto){}
 
 
 @Delete("/delete-product/:id")
