@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { ProductService } from '../product.service';
+import { ProductService } from '../service/product.service';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { swaggerConsumes } from 'src/common/enum/swaggerConsumes.enum';
 import { CreateProductDto, UpdateProductDto } from '../dto/product.dto';

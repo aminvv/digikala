@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ProductService } from './product.service';
+import { ProductService } from './service/product.service';
 import { ProductController } from './controller/product.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
@@ -9,10 +9,11 @@ import { ProductColorEntity } from './entities/product-color.entity';
 import { ProductColorController } from './controller/product-color.controller';
 import { ProductDetailController } from './controller/product-detail.controller';
 import { ProductSizeController } from './controller/product-size.controller';
+import { ProductDetailService } from './service/product-detail.service';
 
 @Module({
   imports:[TypeOrmModule.forFeature([ProductEntity,ProductDetailEntity,ProductSizeEntity,ProductColorEntity])],
   controllers: [ProductController,ProductColorController,ProductDetailController,ProductSizeController],
-  providers: [ProductService],
+  providers: [ProductService,ProductDetailService],
 })
 export class ProductModule {}

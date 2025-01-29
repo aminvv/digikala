@@ -5,9 +5,9 @@ export class AddDetailDto {
     @ApiProperty()
     productId:number
     @ApiPropertyOptional()
-    key:number
+    key:string
     @ApiPropertyOptional()
-    value:number
+    value:string
 
 }
 

@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from './entities/product.entity';
+import { ProductEntity } from '../entities/product.entity';
 import { DeepPartial, Repository } from 'typeorm';
-import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
-import { ProductType } from './enum/type.enum';
+import { CreateProductDto, UpdateProductDto } from '../dto/product.dto';
+import { ProductType } from '../enum/type.enum';
 import { toBoolean } from 'src/utils/functions';
 
 @Injectable()
@@ -63,7 +63,13 @@ async update(id:number,updateProductDto:UpdateProductDto){
 async find(){
     return this.productRepository.find({
         where:{},
-        relations:{colors:true,sizes:true,details:true}
+        relations:{colors:true,sizes:true,details:true},
+        select:{
+            details:{
+                key:true,
+                value:true,
+            }
+        }
     })
 }
 
@@ -97,3 +103,4 @@ async delete(id:number){
 }
 
 }
+ 
