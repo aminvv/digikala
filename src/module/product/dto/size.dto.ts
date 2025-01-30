@@ -17,4 +17,4 @@ export class AddSizeDto {
 }
 
 
-export class UpdateAddSizeDtoDto extends PartialType(AddSizeDto){}
+export class UpdateAddSizeDto extends PartialType(AddSizeDto){}
