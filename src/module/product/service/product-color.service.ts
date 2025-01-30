@@ -27,7 +27,7 @@ export class ProductColorService {
             await queryRunner.startTransaction()
             const { productId, active_discount, count, discount, price,color_code,color_name } = colorDto
             let product = await queryRunner.manager.findOneBy(ProductEntity, { id: productId })
-            if (product.type == ProductType.Single) throw new BadRequestException("product type is Single")
+            if (product.type !== ProductType.Coloring) throw new BadRequestException("product type is n't Coloring")
             if (!product) throw new NotFoundException("not found product")
             await queryRunner.manager.insert(ProductColorEntity, {
                 count,

@@ -26,7 +26,7 @@ export class ProductSizeService {
             await queryRunner.startTransaction()
             const { productId, active_discount, count, discount, price, size } = sizeDto
             let product = await queryRunner.manager.findOneBy(ProductEntity, { id: productId })
-            if (product.type == ProductType.Single) throw new BadRequestException("product type is Single")
+            if (product.type !== ProductType.Sizing) throw new BadRequestException("product type is n't Sizing")
             if (!product) throw new NotFoundException("not found product")
             await queryRunner.manager.insert(ProductSizeEntity, {
                 count,
