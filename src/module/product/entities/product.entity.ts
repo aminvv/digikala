@@ -4,8 +4,9 @@ import { ProductDetailEntity } from "./product-detail.entity";
 import { ProductColorEntity } from "./product-color.entity";
 import { ProductSizeEntity } from "./product-size.entity";
 import { ProductType } from "../enum/type.enum";
+import { EntityName } from "src/common/enum/entityName.enum";
 
-@Entity()
+@Entity(EntityName.Product)
 export class ProductEntity extends BaseEntityCustom {
     @Column()
     title: string
@@ -18,7 +19,7 @@ export class ProductEntity extends BaseEntityCustom {
     @Column({type:"enum",enum:ProductType})
     type: string
     @Column({default:0})
-    count: number
+    count: number 
     @Column({type:"decimal" ,nullable:true})
     price: number
     @Column({type:"decimal" ,nullable:true,default:0})

@@ -2,8 +2,9 @@
 import { BaseEntityCustom } from "src/common/abstract/baseEntity.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
 import { ProductEntity } from "./product.entity";
+import { EntityName } from "src/common/enum/entityName.enum";
 
-@Entity()
+@Entity(EntityName.ProductSize)
 export class ProductSizeEntity extends BaseEntityCustom {
     @Column()
     productId: number

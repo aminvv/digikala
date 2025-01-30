@@ -19,4 +19,4 @@ export class AddColorDto {
 }
 
 
-export class UpdateAddColorDtoDto extends PartialType(AddColorDto){}
+export class UpdateAddColorDto extends PartialType(AddColorDto){}

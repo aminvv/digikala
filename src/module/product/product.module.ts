@@ -11,10 +11,11 @@ import { ProductDetailController } from './controller/product-detail.controller'
 import { ProductSizeController } from './controller/product-size.controller';
 import { ProductDetailService } from './service/product-detail.service';
 import { ProductSizeService } from './service/product-size.service';
+import { ProductColorService } from './service/product-color.service';
 
 @Module({
   imports:[TypeOrmModule.forFeature([ProductEntity,ProductDetailEntity,ProductSizeEntity,ProductColorEntity])],
   controllers: [ProductController,ProductColorController,ProductDetailController,ProductSizeController],
-  providers: [ProductService,ProductDetailService,ProductSizeService],
+  providers: [ProductService,ProductDetailService,ProductSizeService,ProductColorService],
 })
 export class ProductModule {}
