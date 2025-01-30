@@ -10,12 +10,12 @@ export class DiscountEntity extends BaseEntityCustom {
     @Column({nullable:true,type:"decimal"})
     percent:number
     @Column({nullable:true,type:"decimal"})
-    amount:string
+    amount:number
     @Column({nullable:true})
     limit:number
     @Column({nullable:true,default:0})
     usage:number
-    @Column({type:"timestamp"})
+    @Column({type:"timestamp", nullable:true})
     expires_in:Date
     @Column({nullable:true})
     productId:number

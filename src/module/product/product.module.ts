@@ -17,5 +17,6 @@ import { ProductColorService } from './service/product-color.service';
   imports:[TypeOrmModule.forFeature([ProductEntity,ProductDetailEntity,ProductSizeEntity,ProductColorEntity])],
   controllers: [ProductController,ProductColorController,ProductDetailController,ProductSizeController],
   providers: [ProductService,ProductDetailService,ProductSizeService,ProductColorService],
+  
 })
 export class ProductModule {}
