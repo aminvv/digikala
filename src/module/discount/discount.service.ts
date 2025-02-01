@@ -99,6 +99,7 @@ export class DiscountService {
       if(discountRow && discountRow.id !== id){
          throw new ConflictException("already exist discount code");
       }
+      discount.code=code
     }
 
     await this.discountRepository.save(discount)
@@ -122,3 +123,4 @@ export class DiscountService {
   }
 
 }
+ 

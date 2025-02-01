@@ -18,8 +18,8 @@ import { ProductDetailService } from '../product/service/product-detail.service'
 import { ProductService } from '../product/service/product.service';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([DiscountEntity,ProductEntity,ProductDetailEntity,ProductSizeEntity,ProductColorEntity]),ProductModule],
-  controllers: [DiscountController,ProductController,ProductColorController,ProductDetailController,ProductSizeController],
-  providers: [DiscountService,ProductService,ProductDetailService,ProductSizeService,ProductColorService],
+  imports:[TypeOrmModule.forFeature([DiscountEntity]),ProductModule],
+  controllers: [DiscountController],
+  providers: [DiscountService],
 })
 export class DiscountModule {}
