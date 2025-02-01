@@ -4,4 +4,5 @@ ProductDetail="product_detail",
 ProductSize="product_size",
 ProductColor="product_color",
 Discount="discount",
+Basket="basket",
 }      

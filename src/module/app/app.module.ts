@@ -5,6 +5,7 @@ import { join } from 'path';
 import { TypeOrmConfig } from 'src/config/typeorm';
 import { ProductModule } from '../product/product.module';
 import { DiscountModule } from '../discount/discount.module';
+import { BasketModule } from '../basket/basket.module';
 
 
 @Module({
@@ -12,6 +13,7 @@ import { DiscountModule } from '../discount/discount.module';
     TypeOrmModule.forRoot(TypeOrmConfig()),
     ProductModule,
     DiscountModule,
+    BasketModule,
   ],
   controllers: [],
   providers: [],

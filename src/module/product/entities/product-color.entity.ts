@@ -1,8 +1,9 @@
 
 import { BaseEntityCustom } from "src/common/abstract/baseEntity.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { ProductEntity } from "./product.entity";
 import { EntityName } from "src/common/enum/entityName.enum";
+import { BasketEntity } from "src/module/basket/entities/basket.entity";
 
 @Entity(EntityName.ProductColor)
 export class ProductColorEntity extends BaseEntityCustom {
@@ -21,6 +22,8 @@ export class ProductColorEntity extends BaseEntityCustom {
     @Column({ default: false })
     active_discount: boolean
 
-        @ManyToOne(()=>ProductEntity,product=>product.colors,{onDelete:"CASCADE"})
-        product:ProductEntity
+    @ManyToOne(() => ProductEntity, product => product.colors, { onDelete: "CASCADE" })
+    product: ProductEntity
+    @OneToMany(() => BasketEntity, basket => basket.color)
+    baskets: BasketEntity[]
 }

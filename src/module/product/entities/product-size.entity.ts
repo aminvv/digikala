@@ -1,8 +1,9 @@
 
 import { BaseEntityCustom } from "src/common/abstract/baseEntity.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { ProductEntity } from "./product.entity";
 import { EntityName } from "src/common/enum/entityName.enum";
+import { BasketEntity } from "src/module/basket/entities/basket.entity";
 
 @Entity(EntityName.ProductSize)
 export class ProductSizeEntity extends BaseEntityCustom {
@@ -12,14 +13,16 @@ export class ProductSizeEntity extends BaseEntityCustom {
     size: string
     @Column()
     count: number
-    @Column({type:"decimal",})
+    @Column({ type: "decimal", })
     discount: number
-    @Column({type:"decimal",default:0})
+    @Column({ type: "decimal", default: 0 })
     price: number
-    @Column({default:false})
+    @Column({ default: false })
     active_discount: boolean
 
-        @ManyToOne(()=>ProductEntity,product=>product.sizes,{onDelete:"CASCADE"})
-        product:ProductEntity
+    @ManyToOne(() => ProductEntity, product => product.sizes, { onDelete: "CASCADE" })
+    product: ProductEntity
+     @OneToMany(()=>BasketEntity,basket=>basket.size)
+        baskets:BasketEntity[]
 }
 
