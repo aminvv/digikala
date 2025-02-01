@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger"
 import { DiscountType } from "../enum/type.enum"
 
 export class CreateDiscountDto {
@@ -17,3 +17,6 @@ export class CreateDiscountDto {
     @ApiProperty({ enum: DiscountType })
     type: string
 }
+
+
+export class UpdateDiscountDto extends PartialType(CreateDiscountDto){}
