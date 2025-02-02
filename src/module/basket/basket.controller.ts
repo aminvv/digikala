@@ -40,9 +40,9 @@ export class BasketController {
     return this.basketService.removeFromBasketById(id);
   }
 
-  // @Delete('/removeDiscount-FromBasket')
-  //  @ApiConsumes(swaggerConsumes.UrlEncoded)
-  // removeDiscountFromBasket(@Param('id') id: string) {
-  //   return this.basketService.removeDiscountFromBasket(+id);
-  //}
+  @Delete('/removeDiscount-FromBasket')
+   @ApiConsumes(swaggerConsumes.UrlEncoded)
+  removeDiscountFromBasket(@Body() discountDto:AddDiscountToBasketDto) {
+    return this.basketService.removeDiscountFromBasket(discountDto);
+  }
 }

@@ -210,4 +210,24 @@ export class BasketService {
             message: "discount added"
         }
     }
+
+
+    async removeDiscountFromBasket(addDiscountBasket: AddDiscountToBasketDto) {
+        const { code } = addDiscountBasket
+        const discount = await this.discountService.getDiscountByCode(code)
+        if (!discount) throw new NotFoundException("notFound discount")
+    
+        const existDiscount = await this.basketRepository.findOneBy({ discountId: discount.id })
+        if (existDiscount) {
+            await this.basketRepository.delete({id:existDiscount.id})
+        }else{
+            throw new NotFoundException("notFound discount")
+        }
+
+        return {
+            message: "discount removed"
+        }
+    }
+
+
 }
