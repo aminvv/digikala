@@ -9,6 +9,10 @@ import { ProductColorService } from '../product/service/product-color.service';
 import { ProductSizeService } from '../product/service/product-size.service';
 import { ProductSizeEntity } from '../product/entities/product-size.entity';
 import { ProductColorEntity } from '../product/entities/product-color.entity';
+import { AddDiscountToBasketDto } from './dto/create-discount.dto';
+import { DiscountEntity } from '../discount/entities/discount.entity';
+import { DiscountService } from '../discount/discount.service';
+import { DiscountType } from '../discount/enum/type.enum';
 
 @Injectable()
 export class BasketService {
@@ -17,6 +21,7 @@ export class BasketService {
         private productService: ProductService,
         private productColorService: ProductColorService,
         private productSizeService: ProductSizeService,
+        private discountService: DiscountService,
     ) { }
     async addToBasket(addToBasket: BasketDto) {
         const { colorId, productId, sizeId } = addToBasket;
@@ -151,5 +156,58 @@ export class BasketService {
         return {
             message: "product remove from  basket",
         };
+    }
+
+    async addDiscountToBasket(addDiscountBasket: AddDiscountToBasketDto) {
+        const { code } = addDiscountBasket
+        const discount = await this.discountService.getDiscountByCode(code)
+        if (!discount) throw new NotFoundException("notFound discount")
+        if (discount.type === DiscountType.product && discount.productId) {
+            const basketItem = await this.basketRepository.findOneBy({
+                productId: discount.productId,
+                
+            })
+            if (!basketItem) {
+                throw new BadRequestException("not found item for this discount code")
+            }
+        }
+        if (discount.limit && (discount.limit <= 0 || discount.usage >= discount.limit)) {
+            throw new BadRequestException("discount is limited")
+        }
+        if (discount.expires_in && discount.expires_in >= new Date()) {
+            throw new BadRequestException("discount is expired")
+        }
+
+        const existDiscount = await this.basketRepository.findOneBy({ discountId: discount.id })
+        if (existDiscount) {
+            throw new BadRequestException("already exist discount in basket ")
+        }
+        if (discount.type == DiscountType.Basket) {
+            const item = await this.basketRepository.findOne({
+                relations: {
+                    discount: true
+                },
+                where: {
+                    discount: { type: DiscountType.Basket }
+                }
+            })
+            if (item) {
+                throw new BadRequestException('you already used basket discount  ')
+            }
+        }
+        const basketItem = await this.basketRepository.findOneBy({
+            productId: discount?.productId
+        });
+
+        await this.basketRepository.insert({
+            productId: discount?.productId,
+            discountId: discount.id,
+            count:0
+        })
+
+
+        return {
+            message: "discount added"
+        }
     }
 }
