@@ -12,6 +12,7 @@ import { ProductSizeController } from './controller/product-size.controller';
 import { ProductDetailService } from './service/product-detail.service';
 import { ProductSizeService } from './service/product-size.service';
 import { ProductColorService } from './service/product-color.service';
+import { DiscountModule } from '../discount/discount.module';
 
 @Module({
   imports:[TypeOrmModule.forFeature([ProductEntity,ProductDetailEntity,ProductSizeEntity,ProductColorEntity])],
