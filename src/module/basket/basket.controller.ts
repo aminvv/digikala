@@ -1,17 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { BasketService } from './basket.service';
-import { AddToBasketDto } from './dto/create-basket.dto';
+import { BasketDto } from './dto/create-basket.dto';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { swaggerConsumes } from 'src/common/enum/swaggerConsumes.enum';
 
 @Controller('basket')
 @ApiTags('basket')
 export class BasketController {
-  constructor(private readonly basketService: BasketService) {}
+  constructor(private readonly basketService: BasketService) { }
 
   @Post("/addToBasket")
-   @ApiConsumes(swaggerConsumes.UrlEncoded,)
-  addToBasket(@Body() addToBasketDto: AddToBasketDto) {
+  @ApiConsumes(swaggerConsumes.UrlEncoded,)
+  addToBasket(@Body() addToBasketDto: BasketDto) {
     return this.basketService.addToBasket(addToBasketDto);
   }
 
@@ -27,11 +27,17 @@ export class BasketController {
   //   return this.basketService.addDiscountToBasket(+id);
   // }
 
-  // @Delete('/removeFromBasket')
-  //  @ApiConsumes(swaggerConsumes.UrlEncoded)
-  // removeFromBasket(@Param('id') id: string, @Body() addToBasketDto: AddToBasketDto) {
-  //   return this.basketService.removeFromBasket(+id, addToBasketDto);
-  // }
+  @Delete('/removeFromBasket')
+  @ApiConsumes(swaggerConsumes.UrlEncoded)
+  removeFromBasket(@Body() removeBasketDto: BasketDto) {
+    return this.basketService.removeFromBasket(removeBasketDto);
+  }
+
+  @Delete('/removeFromBasketById/:id')
+  @ApiConsumes(swaggerConsumes.UrlEncoded)
+  removeFromBasketById(@Param("id",ParseIntPipe) id: number) {
+    return this.basketService.removeFromBasketById(id);
+  }
 
   // @Delete('/removeDiscount-FromBasket')
   //  @ApiConsumes(swaggerConsumes.UrlEncoded)
