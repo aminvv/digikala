@@ -13,6 +13,7 @@ import { AddDiscountToBasketDto } from './dto/create-discount.dto';
 import { DiscountEntity } from '../discount/entities/discount.entity';
 import { DiscountService } from '../discount/discount.service';
 import { DiscountType } from '../discount/enum/type.enum';
+import { count } from 'console';
 
 @Injectable()
 export class BasketService {
@@ -82,6 +83,89 @@ export class BasketService {
             message: "product added to basket",
         };
     }
+
+    async getBasket() {
+        let products = []
+        let discounts = []
+        let finalAmount = 0
+        let totalDiscountAmount = 0
+    
+        const items = await this.basketRepository.find({
+            where: {},
+            relations: {
+                product: true,
+                color: true,
+                size: true,
+                discount: true,
+            }
+        })
+    
+        for (const item of items) {
+            const { color, size, product, discount } = item
+            let discountAmount = 0
+            const count = item.count ;
+    
+            if (product?.type === ProductType.Single) {
+                const price = Number(product.price); 
+                if (product?.active_discount) {
+                    discountAmount = price * (Number(product.discount) / 100);
+                    totalDiscountAmount += discountAmount;
+                }
+                finalAmount += (price - discountAmount) * parseInt(count.toString());
+                products.push({
+                    id: product.id,
+                    slug: product.slug,
+                    title: product.title,
+                    active_discount: product.active_discount,
+                    discount: product.discount,
+                    price: product.price
+                });
+            } 
+            else if (product?.type === ProductType.Sizing) {
+                const price = Number(size?.price);
+                if (size?.active_discount) {
+                    discountAmount = price * (Number(size.discount) / 100);
+                    totalDiscountAmount += discountAmount;
+                }
+                finalAmount += (price - discountAmount) * parseInt(count.toString());
+                products.push({
+                    id: product.id,
+                    slug: product.slug,
+                    title: product.title,
+                    active_discount: size.active_discount,
+                    discount: size.discount,
+                    price: size.price,
+                    size: size.size
+                });
+            } 
+            else if (product?.type === ProductType.Coloring) {
+                const price = Number(color?.price);
+                if (color?.active_discount) {
+                    discountAmount = price * (Number(color.discount) / 100);
+                    totalDiscountAmount += discountAmount;
+                }
+                finalAmount += (price - discountAmount) * parseInt(count.toString());
+                products.push({
+                    id: product.id,
+                    slug: product.slug,
+                    title: product.title,
+                    active_discount: color.active_discount,
+                    discount: color.discount,
+                    price: color.price,
+                    color_code: color.color_code,
+                    color_name: color.color_name,
+                });
+            } 
+        }
+    
+        return {
+            finalAmount: isNaN(finalAmount) ? 0 : finalAmount,
+            totalDiscountAmount,
+            products,
+            discounts,
+        };
+    }
+    
 
     async removeFromBasket(removeBasketDto: BasketDto) {
         const { colorId, productId, sizeId } = removeBasketDto
@@ -165,7 +249,7 @@ export class BasketService {
         if (discount.type === DiscountType.product && discount.productId) {
             const basketItem = await this.basketRepository.findOneBy({
                 productId: discount.productId,
-                
+
             })
             if (!basketItem) {
                 throw new BadRequestException("not found item for this discount code")
@@ -202,7 +286,7 @@ export class BasketService {
         await this.basketRepository.insert({
             productId: discount?.productId,
             discountId: discount.id,
-            count:0
+            count: 0
         })
 
 
@@ -216,11 +300,11 @@ export class BasketService {
         const { code } = addDiscountBasket
         const discount = await this.discountService.getDiscountByCode(code)
         if (!discount) throw new NotFoundException("notFound discount")
-    
+
         const existDiscount = await this.basketRepository.findOneBy({ discountId: discount.id })
         if (existDiscount) {
-            await this.basketRepository.delete({id:existDiscount.id})
-        }else{
+            await this.basketRepository.delete({ id: existDiscount.id })
+        } else {
             throw new NotFoundException("notFound discount")
         }
 

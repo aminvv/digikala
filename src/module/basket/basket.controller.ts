@@ -16,11 +16,11 @@ export class BasketController {
     return this.basketService.addToBasket(addToBasketDto);
   }
 
-  // @Get()
-  //  @ApiConsumes(swaggerConsumes.UrlEncoded)
-  // BasketFind() {
-  //   return this.basketService.BasketFind();
-  // }
+  @Get()
+   @ApiConsumes(swaggerConsumes.UrlEncoded)
+   getBasket() {
+    return this.basketService.getBasket();
+  }
 
   @Post('/add-discount')
    @ApiConsumes(swaggerConsumes.UrlEncoded)
