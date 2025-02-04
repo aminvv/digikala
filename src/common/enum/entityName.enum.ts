@@ -5,4 +5,7 @@ export enum EntityName {
     ProductColor = "product_color",
     Basket = "basket",
     Discount = "discount",
+    Order = "order",
+    OrderItem = "orderItem",
+    Payment = "payment",
 }      
