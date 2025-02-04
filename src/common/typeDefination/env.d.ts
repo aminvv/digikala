@@ -9,6 +9,11 @@ namespace NodeJS {
         DB_USERNAME: string
         DB_PASSWORD: string
 
+        // ZARINNPAL
+        ZARINNPAL_VERIFY_URL: string
+        ZARINNPAL_REQUEST_URL: string
+        ZARINNPAL_GATEWAY_URL: string
+        ZARINNPAL_MERCHANT_ID: string
 
-}
+    }
 }

@@ -1,4 +1,4 @@
-export enum OrderStatus{
+export enum OrderStatus {
     Pending="pending",
     Ordered="ordered",
     InProcess="inProcess",

@@ -9,8 +9,10 @@ import { ProductColorEntity } from "src/module/product/entities/product-color.en
 
 @Entity(EntityName.OrderItem)
 export class OrderItemEntity extends BaseEntityCustom {
-    @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.Pending })
+    @Column()
     orderId: number
+    @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.Pending })
+    status:string
     @Column()
     productId: string
     @Column({ nullable: true })

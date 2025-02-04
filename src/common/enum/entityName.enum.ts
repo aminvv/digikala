@@ -6,6 +6,6 @@ export enum EntityName {
     Basket = "basket",
     Discount = "discount",
     Order = "order",
-    OrderItem = "orderItem",
+    OrderItem = "order_item",
     Payment = "payment",
 }      
