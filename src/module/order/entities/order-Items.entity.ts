@@ -19,6 +19,8 @@ export class OrderItemEntity extends BaseEntityCustom {
     colorId: number
     @Column({ nullable: true })
     sizeId: number
+    @Column({ nullable: true })
+    count: number
 
     @ManyToOne(() => OrderEntity, (order) => order.orderItems)
     order: OrderEntity

@@ -18,7 +18,7 @@ export class OrderEntity extends BaseEntityCustom {
     @Column()
     final_amount: number
     @Column()
-    Discount_amount: number
+    discount_amount: number
     @CreateDateColumn()
     create_at: Date
 

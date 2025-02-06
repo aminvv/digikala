@@ -9,14 +9,14 @@ export class PaymentEntity extends BaseEntityCustom {
     amount:number
     @Column({default:false})
     status:boolean
-    @Column()
+    @Column({unique:true})
     invoice_number:string
     @Column({nullable:true})
     refId:string
     @Column({nullable:true})
     authority:string
     @Column()
-    orderId:string
+    orderId:number
     @CreateDateColumn()
     create_at:Date
 

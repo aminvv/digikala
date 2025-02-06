@@ -9,9 +9,11 @@ import { ProductModule } from '../product/product.module';
 import { DiscountModule } from '../discount/discount.module';
 import { ZarinnpalService } from '../http/zarinnpal.service';
 import { HttpModule } from '@nestjs/axios';
+import { OrderItemEntity } from '../order/entities/order-Items.entity';
+import { OrderEntity } from '../order/entities/order.entity';
 
 @Module({
-  imports:[ProductModule,DiscountModule,HttpModule,TypeOrmModule.forFeature([PaymentEntity,BasketEntity])],
+  imports:[ProductModule,DiscountModule,HttpModule,TypeOrmModule.forFeature([PaymentEntity,BasketEntity,OrderItemEntity,OrderEntity])],
   controllers: [PaymentController],
   providers: [PaymentService,BasketService,],
 })

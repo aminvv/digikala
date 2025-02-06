@@ -85,199 +85,222 @@ export class BasketService {
     }
 
     async getBasket() {
-        let products = []
-        let discounts = []
-        let finalAmount = 0
-        let totalDiscountAmount = 0
-        let totalPrice = 0
-
+        let products = [];
+        let discounts = [];
+        let finalAmount = 0;
+        let totalPrice = 0;
+        let totalDiscountAmount = 0;
         const items = await this.basketRepository.find({
-            where: {},
-            relations: {
-                product: true,
-                color: true,
-                size: true,
-                discount: true,
-            }
-        })
-
-        const productDiscount = items.filter(item => item?.discountId && item?.discount.type == DiscountType.product)
-
+          where: {},
+          relations: {
+            product: true,
+            color: true,
+            size: true,
+            discount: true,
+          },
+        });
+        const productDiscounts = items.filter(
+          (item) =>
+            item?.discountId && item?.discount?.type === DiscountType.product
+        );
         for (const item of items) {
-            const { color, size, product, discount } = item
-            let discountAmount = 0
-            const count = Number(item.count);
-
-
-            if (product?.type === ProductType.Single) {
-                totalPrice += +product.price
-                const price = Number(product.price);
-                if (product?.active_discount) {
-                    const { newDiscountAmount, newPrice } = this.checkDiscountPercent(+product.price, +product.discount)
-                    discountAmount = newDiscountAmount
-                    product.price = newPrice
-                }
-                const existDiscount = productDiscount.find(dis => dis.productId === product.id)
-                if (existDiscount) {
-                    const { discount } = existDiscount
-
-                    if (this.validateDiscount(discount)) {
-                        discounts.push({
-                            percent: +discount.percent,
-                            amount: +discount.amount,
-                            code: discount.code,
-                            type: discount.type,
-                            productId: discount.productId,
-                        });
-                        if (discount.percent) {
-                            const { newDiscountAmount, newPrice } = this.checkDiscountPercent(+product.price, +product.discount)
-                            discountAmount = newDiscountAmount
-                            product.price = newPrice
-                        } else if (discount.amount) {
-                            const { newDiscountAmount, newPrice } = this.checkDiscountAmount(+product.price, +discount.amount)
-                            discountAmount = newDiscountAmount
-                            product.price = newPrice
-                        }
-                        totalDiscountAmount += discountAmount;
-                    }
-
-                }
-                finalAmount += price * count;
-                products.push({
-                    id: product.id,
-                    slug: product.slug,
-                    title: product.title,
-                    active_discount: product.active_discount,
-                    discount: +product.discount,
-                    price: +product.price
+          const {product, color, size, discount, count} = item;
+          let discountAmount = 0;
+          if (product?.type === ProductType.Single) {
+            totalPrice += +product.price;
+            if (product?.active_discount) {
+              const {newDiscountAmount, newPrice} = this.checkDiscountPercent(
+                +product.price,
+                +product.discount
+              );
+              discountAmount = newDiscountAmount;
+              product.price = newPrice;
+              totalDiscountAmount += discountAmount;
+            }
+            const existDiscount = productDiscounts.find(
+              (dis) => dis.productId === product.id
+            );
+            if (existDiscount) {
+              const {discount} = existDiscount;
+              if (this.validateDiscount(discount)) {
+                discounts.push({
+                  percent: discount.percent,
+                  amount: discount.amount,
+                  code: discount.code,
+                  type: discount.type,
+                  productId: discount.productId,
                 });
+                if (discount.percent) {
+                  const {newDiscountAmount, newPrice} = this.checkDiscountPercent(
+                    product.price,
+                    discount.percent
+                  );
+                  product.price = newPrice;
+                  discountAmount += newDiscountAmount;
+                } else if (discount.amount) {
+                  const {newDiscountAmount, newPrice} = this.checkDiscountAmount(
+                    product.price,
+                    discount.amount
+                  );
+                  product.price = newPrice;
+                  discountAmount += newDiscountAmount;
+                }
+                totalDiscountAmount += discountAmount;
+              }
             }
-            else if (product?.type === ProductType.Sizing) {
-                totalPrice += +size.price
-                const price = Number(size?.price);
-                if (size?.active_discount) {
-                    const { newDiscountAmount, newPrice } = this.checkDiscountPercent(+size.price, +size.discount)
-                    discountAmount = newDiscountAmount
-                    size.price = newPrice
-                }
-                const existDiscount = productDiscount.find(dis => dis.productId === product.id)
-                if (existDiscount) {
-                    const { discount } = existDiscount;
-
-                    if (this.validateDiscount(discount)) {
-                        discounts.push({
-                            percent: +discount.percent,
-                            amount: +discount.amount,
-                            code: discount.code,
-                            type: discount.type,
-                            productId: discount.productId,
-                        });
-                        if (discount.percent) {
-                            const { newDiscountAmount, newPrice } = this.checkDiscountPercent(+size.price, +size.discount)
-                            discountAmount = newDiscountAmount
-                            size.price = newPrice
-                            totalDiscountAmount += discountAmount;
-                        } else if (discount.amount) {
-                            const { newDiscountAmount, newPrice } = this.checkDiscountAmount(+size.price, +discount.amount)
-                            discountAmount = newDiscountAmount
-                            size.price = newPrice
-                        }
-                    }
-                    totalDiscountAmount += discountAmount;
-
-                }
-                finalAmount += price * count;
-                products.push({
-                    id: product.id,
-                    slug: product.slug,
-                    title: product.title,
-                    active_discount: size.active_discount,
-                    discount: +size.discount,
-                    price: +size.price,
-                    size: size.size
+            finalAmount += +product.price * count;
+            products.push({
+              id: product.id,
+              slug: product.slug,
+              title: product.title,
+              active_discount: product.active_discount,
+              discount: product.discount,
+              price: product.price,
+            });
+          } else if (product?.type === ProductType.Sizing) {
+            totalPrice += +size.price;
+            if (size?.active_discount) {
+              const {newDiscountAmount, newPrice} = this.checkDiscountPercent(
+                +size.price,
+                +size.discount
+              );
+              discountAmount = newDiscountAmount;
+              size.price = newPrice;
+            }
+            const existDiscount = productDiscounts.find(
+              (dis) => dis.productId === product.id
+            );
+            if (existDiscount) {
+              const {discount} = existDiscount;
+              if (this.validateDiscount(discount)) {
+                discounts.push({
+                  percent: discount.percent,
+                  amount: discount.amount,
+                  code: discount.code,
+                  type: discount.type,
+                  productId: discount.productId,
                 });
+                if (discount.percent) {
+                  const {newDiscountAmount, newPrice} = this.checkDiscountPercent(
+                    size.price,
+                    discount.percent
+                  );
+                  size.price = newPrice;
+                  discountAmount += newDiscountAmount;
+                } else if (discount.amount) {
+                  const {newDiscountAmount, newPrice} = this.checkDiscountAmount(
+                    size.price,
+                    discount.amount
+                  );
+                  size.price = newPrice;
+                  discountAmount += newDiscountAmount;
+                }
+              }
             }
-            else if (product?.type === ProductType.Coloring) {
-                totalPrice += +color.price
-                const price = Number(color?.price);
-                if (color?.active_discount) {
-                    const { newDiscountAmount, newPrice } = this.checkDiscountPercent(+color.price, +color.discount)
-                    discountAmount = newDiscountAmount
-                    color.price = newPrice
-                }
-                const existDiscount = productDiscount.find(dis => dis.productId === product.id)
-                if (existDiscount) {
-                    const { discount } = existDiscount
-
-                    if (this.validateDiscount(discount)) {
-                        discounts.push({
-                            percent: +discount.percent,
-                            amount: +discount.amount,
-                            code: discount.code,
-                            type: discount.type,
-                            productId: discount.productId,
-                        });
-                        if (discount.percent) {
-                            const { newDiscountAmount, newPrice } = this.checkDiscountPercent(+color.price, +color.discount)
-                            discountAmount = newDiscountAmount
-                            color.price = newPrice
-                            totalDiscountAmount += discountAmount;
-                        } else if (discount.amount) {
-                            const { newDiscountAmount, newPrice } = this.checkDiscountAmount(+color.price, +discount.amount)
-                            discountAmount = newDiscountAmount
-                            color.price = newPrice
-                        }
-                    }
-                    totalDiscountAmount += discountAmount;
-
-                }
-                finalAmount += price * count;
-                products.push({
-                    id: product.id,
-                    slug: product.slug,
-                    title: product.title,
-                    active_discount: color.active_discount,
-                    discount: +color.discount,
-                    price: +color.price,
-                    color_code: color.color_code,
-                    color_name: color.color_name,
+            totalDiscountAmount += discountAmount;
+            finalAmount += +size.price * count;
+            products.push({
+              id: product.id,
+              slug: product.slug,
+              title: product.title,
+              active_discount: size.active_discount,
+              discount: size.discount,
+              sizeId: size.id,
+              price: size.price,
+              size: size.size,
+            });
+          } else if (product?.type === ProductType.Coloring) {
+            totalPrice += +color.price;
+            if (color?.active_discount) {
+              const {newDiscountAmount, newPrice} = this.checkDiscountPercent(
+                +color.price,
+                +color.discount
+              );
+              discountAmount = newDiscountAmount;
+              color.price = newPrice;
+            }
+            const existDiscount = productDiscounts.find(
+              (dis) => dis.productId === product.id
+            );
+            if (existDiscount) {
+              const {discount} = existDiscount;
+              if (this.validateDiscount(discount)) {
+                discounts.push({
+                  percent: discount.percent,
+                  amount: discount.amount,
+                  code: discount.code,
+                  type: discount.type,
+                  productId: discount.productId,
                 });
+                if (discount.percent) {
+                  const {newDiscountAmount, newPrice} = this.checkDiscountPercent(
+                    color.price,
+                    discount.percent
+                  );
+                  color.price = newPrice;
+                  discountAmount += newDiscountAmount;
+                } else if (discount.amount) {
+                  const {newDiscountAmount, newPrice} = this.checkDiscountAmount(
+                    color.price,
+                    discount.amount
+                  );
+                  color.price = newPrice;
+                  discountAmount += newDiscountAmount;
+                }
+              }
             }
-            else if (discount) {
-                if (this.validateDiscount(discount))
-                    if (discount.type === DiscountType.Basket) {
-                        if (this.validateDiscount(discount)) {
-                            discounts.push({
-                                percent: +discount.percent,
-                                amount: +discount.amount,
-                                code: discount.code,
-                                type: discount.type,
-                                productId: discount.productId,
-                            });
-                            if (discount.percent) {
-                                const { newDiscountAmount, newPrice } = this.checkDiscountPercent(+finalAmount, +discount.percent)
-                                discountAmount = newDiscountAmount
-                                finalAmount = newPrice
-                            } else if (discount.amount) {
-                                const { newDiscountAmount, newPrice } = this.checkDiscountAmount(+finalAmount, +discount.amount)
-                                discountAmount = newDiscountAmount
-                                finalAmount = newPrice
-                            }
-                        }
-                        totalDiscountAmount += discountAmount;
-                    }
+            totalDiscountAmount += discountAmount;
+            finalAmount += +color.price * count;
+            products.push({
+              id: product.id,
+              slug: product.slug,
+              title: product.title,
+              active_discount: color.active_discount,
+              discount: color.discount,
+              price: color.price,
+              colorId: color.id,
+              color_code: color.color_code,
+              color_name: color.color_name,
+            });
+          } else if (discount) {
+            if (this.validateDiscount(discount)) {
+              if (discount.type === DiscountType.Basket) {
+                discounts.push({
+                  percent: discount.percent,
+                  amount: discount.amount,
+                  code: discount.code,
+                  type: discount.type,
+                  productId: discount.productId,
+                });
+                if (discount.percent) {
+                  const {newDiscountAmount, newPrice} = this.checkDiscountPercent(
+                    finalAmount,
+                    discount.percent
+                  );
+                  finalAmount = newPrice;
+                  discountAmount = +newDiscountAmount;
+                } else if (discount.amount) {
+                  const {newDiscountAmount, newPrice} = this.checkDiscountAmount(
+                    finalAmount,
+                    discount.amount
+                  );
+                  finalAmount = newPrice;
+                  discountAmount = newDiscountAmount;
+                }
+                totalDiscountAmount += discountAmount;
+              }
             }
+          }
         }
-
         return {
-            finalAmount: isNaN(finalAmount) ? 0 : finalAmount,
-            totalDiscountAmount,
-            totalPrice,
-            productDiscount,
-            products,
-            discounts,
+          totalPrice,
+          finalAmount,
+          totalDiscountAmount,
+          productDiscounts,
+          products,
+          discounts,
         };
-    }
+      }
 
     async removeFromBasket(removeBasketDto: BasketDto) {
         const { colorId, productId, sizeId } = removeBasketDto
@@ -425,25 +448,24 @@ export class BasketService {
         }
     }
 
-    async validateDiscount(discount: DiscountEntity) {
+    validateDiscount(discount: DiscountEntity) {
         let limitCondition = discount.limit && discount.limit > discount.usage;
         let timeCondition = discount.expires_in && discount.expires_in > new Date();
-        return limitCondition || timeCondition
-
-    }
-    checkDiscountPercent(price: number, percent: number) {
+        return limitCondition || timeCondition;
+      }
+      checkDiscountPercent(price: number, percent: number) {
         let newDiscountAmount = +price * (+percent / 100);
-        let newPrice = +newDiscountAmount > +price ? 0 : + price - newDiscountAmount;
+        let newPrice = +newDiscountAmount > +price ? 0 : +price - newDiscountAmount;
         return {
-            newPrice,
-            newDiscountAmount,
-        }
-    }
-    checkDiscountAmount(price: number, amount: number) {
-        let newPrice = +amount > +price ? 0 : +price - amount;
+          newPrice,
+          newDiscountAmount,
+        };
+      }
+      checkDiscountAmount(price: number, amount: number) {
+        let newPrice = +amount > +price ? 0 : +price - +amount;
         return {
-            newPrice,
-            newDiscountAmount: +amount,
-        }
-    }
+          newPrice,
+          newDiscountAmount: +amount,
+        };
+      }
 }
