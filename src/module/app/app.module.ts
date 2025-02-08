@@ -8,6 +8,7 @@ import { DiscountModule } from '../discount/discount.module';
 import { BasketModule } from '../basket/basket.module';
 import { PaymentModule } from '../payment/payment.module';
 import { HttpApiModule } from '../http/http.module';
+import { OrderModule } from '../order/order.module';
 
 
 @Module({
@@ -18,6 +19,7 @@ import { HttpApiModule } from '../http/http.module';
     BasketModule,
     PaymentModule,
     HttpApiModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],
